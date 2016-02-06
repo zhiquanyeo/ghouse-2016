@@ -1,7 +1,7 @@
 package org.usfirst.frc.team354.robot;
 
-import edu.wpi.first.wpilibj.buttons.Button;
-import org.usfirst.frc.team354.robot.commands.ExampleCommand;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -34,5 +34,41 @@ public class OI {
     // Start the command when the button is released  and let it run the command
     // until it is finished as determined by it's isFinished method.
     // button.whenReleased(new ExampleCommand());
+	
+	private final Joystick driverStick;
+	
+	public OI() {
+		driverStick = new Joystick(RobotMap.driverJoystick);
+	}
+	
+	// NOTE - This assumes using a gamepad with 2x analog sticks
+	public double getDriverStickLeftX() {
+		return driverStick.getRawAxis(0);
+	}
+	
+	public double getDriverStickLeftY() {
+		return driverStick.getRawAxis(1);
+	}
+	
+	public double getDriverStickRightX() {
+		return driverStick.getRawAxis(2);
+	}
+	
+	public double getDriverStickRightY() {
+		return driverStick.getRawAxis(3);
+	}
+	
+	public JoystickButton getButton(int stick, int button) {
+		switch (stick) {
+			case RobotMap.driverJoystick:
+				return new JoystickButton(driverStick, button);
+			default:
+				return null;
+		}
+	}
+	
+	public boolean getButtonState(int stick, int button) {
+		return getButton(stick, button).get();
+	}
 }
 
