@@ -2,6 +2,10 @@
 package org.usfirst.frc.team354.robot;
 
 import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
+import org.usfirst.frc.team354.robot.subsystems.LowerShooterRoller;
+import org.usfirst.frc.team354.robot.subsystems.MainArm;
+import org.usfirst.frc.team354.robot.subsystems.UpperArm;
+import org.usfirst.frc.team354.robot.subsystems.UpperShooterRoller;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -20,7 +24,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	
 	public static final DriveSystem driveSystem = new DriveSystem();
-
+	public static final MainArm mainArm = new MainArm();
+	public static final UpperArm upperArm = new UpperArm();
+	public static final LowerShooterRoller lowerShooter = new LowerShooterRoller();
+	public static final UpperShooterRoller upperShooter = new UpperShooterRoller();
+	
 	public static OI oi;
 
     Command autonomousCommand;

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team354.robot.subsystems;
 
+import org.usfirst.frc.team354.robot.Constants;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
@@ -8,12 +10,9 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
  *
  */
 public class LowerShooterRoller extends PIDSubsystem {
-
-	private static final int CAN_SRX_MASTER = 26;
-	private static final int CAN_SRX_SLAVE = 27;
 	
-	private CANTalon d_motorMaster = new CANTalon(CAN_SRX_MASTER);
-	private CANTalon d_motorSlave = new CANTalon(CAN_SRX_SLAVE);
+	private CANTalon d_motorMaster = new CANTalon(Constants.CAN_ID_LOWER_SHOOTER_MASTER);
+	private CANTalon d_motorSlave = new CANTalon(Constants.CAN_ID_LOWER_SHOOTER_SLAVE);
 	
     // Initialize your subsystem here
     public LowerShooterRoller() {

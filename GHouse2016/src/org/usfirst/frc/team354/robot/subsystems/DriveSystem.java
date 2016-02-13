@@ -1,5 +1,6 @@
 package org.usfirst.frc.team354.robot.subsystems;
 
+import org.usfirst.frc.team354.robot.Constants;
 import org.usfirst.frc.team354.robot.commands.OperatorTankDrive;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -18,11 +19,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * the set output of the 'master'.
  */
 public class DriveSystem extends Subsystem {
-    
-	private static final int CAN_SRX_LEFT_MASTER = 20;
-	private static final int CAN_SRX_LEFT_SLAVE = 21;
-	private static final int CAN_SRX_RIGHT_MASTER = 22;
-	private static final int CAN_SRX_RIGHT_SLAVE = 23;
 	
 	private CANTalon d_leftMaster;
 	private CANTalon d_leftSlave;
@@ -32,10 +28,10 @@ public class DriveSystem extends Subsystem {
 	private RobotDrive d_driveSystem;
 	
 	public DriveSystem() {
-		d_leftMaster = new CANTalon(CAN_SRX_LEFT_MASTER);
-		d_leftSlave = new CANTalon(CAN_SRX_LEFT_SLAVE);
-		d_rightMaster = new CANTalon(CAN_SRX_RIGHT_MASTER);
-		d_rightSlave = new CANTalon(CAN_SRX_RIGHT_SLAVE);
+		d_leftMaster = new CANTalon(Constants.CAN_ID_DRIVE_LEFT_MASTER);
+		d_leftSlave = new CANTalon(Constants.CAN_ID_DRIVE_LEFT_SLAVE);
+		d_rightMaster = new CANTalon(Constants.CAN_ID_DRIVE_RIGHT_MASTER);
+		d_rightSlave = new CANTalon(Constants.CAN_ID_DRIVE_RIGHT_SLAVE);
 		
 		d_leftSlave.changeControlMode(TalonControlMode.Follower);
 		d_leftSlave.set(d_leftMaster.getDeviceID());

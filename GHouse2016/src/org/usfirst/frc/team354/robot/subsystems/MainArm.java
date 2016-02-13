@@ -2,26 +2,21 @@ package org.usfirst.frc.team354.robot.subsystems;
 
 import org.usfirst.frc.team354.robot.Constants;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 
 /**
  *
  */
-public class UpperShooterRoller extends PIDSubsystem {
+public class MainArm extends PIDSubsystem {
 	
-	private CANTalon d_motorMaster = new CANTalon(Constants.CAN_ID_UPPER_SHOOTER_MASTER);
-	private CANTalon d_motorSlave = new CANTalon(Constants.CAN_ID_UPPER_SHOOTER_SLAVE);
+	private CANTalon d_motor = new CANTalon(Constants.CAN_ID_MAIN_ARM);
+	private AnalogInput d_armPot = new AnalogInput(Constants.AIN_MAIN_ARM_POT);
 	
     // Initialize your subsystem here
-    public UpperShooterRoller() {
-    	// P, I, D, F
-    	super("UpperShooterRoller", 1.0, 0.0, 0.0, 0.025);
-    	
-    	// Set up slave mode
-    	d_motorSlave.changeControlMode(TalonControlMode.Follower);
-    	d_motorSlave.set(d_motorMaster.getDeviceID());
+    public MainArm() {
+    	super("MainArm", 0.1, 0.0, 0.0); // P, I, D
     	
     	getPIDController().setContinuous(false);
     	enable();
@@ -40,12 +35,10 @@ public class UpperShooterRoller extends PIDSubsystem {
         // Return your input value for the PID loop
         // e.g. a sensor, like a potentiometer:
         // yourPot.getAverageVoltage() / kYourMaxVoltage;
-    	return d_motorMaster.getSpeed();
+    	return d_armPot.getAverageVoltage();
     }
     
     protected void usePIDOutput(double output) {
-        // Use output to drive your system, like a motor
-        // e.g. yourMotor.set(output);
-    	d_motorMaster.pidWrite(output);
+        d_motor.pidWrite(output);
     }
 }

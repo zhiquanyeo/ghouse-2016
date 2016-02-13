@@ -46,7 +46,7 @@ public class VisionProcessing {
 	    System.out.println(distance);
 	    double width = vp.widthInFeet(targetPix, targetFt, cameraRes);
 	   // System.out.println(width);
-	    double angle = vp.horizontalAngle(targetPix, targetFt, t.targetDistanceFromCenter(centerX));
+	    double angle = vp.horizontalAngle(targetPix, targetFt, vp.targetDistanceFromCenter(centerX));
 	 
 
 	} 
