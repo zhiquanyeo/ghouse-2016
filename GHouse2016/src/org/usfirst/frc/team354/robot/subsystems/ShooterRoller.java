@@ -39,6 +39,7 @@ public class ShooterRoller extends Subsystem {
 		d_motorMaster.configPeakOutputVoltage(12.0, 0.0);
 		
 		// Set closed loop profile and PID gains
+		// TBD: Adjust P,I,D and F values
 		d_motorMaster.setProfile(0);
 		d_motorMaster.setF(0.1097);
 		d_motorMaster.setP(0.22);
@@ -67,6 +68,14 @@ public class ShooterRoller extends Subsystem {
 	 */
 	public double getSpeed() {
 		return d_speed;
+	}
+	
+	/**
+	 * Get the current closed loop error of the shooter
+	 * @return Difference between requested speed and sensor reading
+	 */
+	public int getClosedLoopError() {
+		return d_motorMaster.getClosedLoopError();
 	}
 
     public void initDefaultCommand() {
