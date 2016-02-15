@@ -1,10 +1,9 @@
 package org.usfirst.frc.team354.robot.subsystems;
 
+import org.usfirst.frc.team354.robot.CANTalonPair;
 import org.usfirst.frc.team354.robot.Constants;
 import org.usfirst.frc.team354.robot.commands.OperatorTankDrive;
 
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -20,26 +19,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class DriveSystem extends Subsystem {
 	
-	private CANTalon d_leftMaster;
-	private CANTalon d_leftSlave;
-	private CANTalon d_rightMaster;
-	private CANTalon d_rightSlave;
+	private CANTalonPair d_left;
+	private CANTalonPair d_right;
 	
 	private RobotDrive d_driveSystem;
 	
 	public DriveSystem() {
-		d_leftMaster = new CANTalon(Constants.CAN_ID_DRIVE_LEFT_MASTER);
-		d_leftSlave = new CANTalon(Constants.CAN_ID_DRIVE_LEFT_SLAVE);
-		d_rightMaster = new CANTalon(Constants.CAN_ID_DRIVE_RIGHT_MASTER);
-		d_rightSlave = new CANTalon(Constants.CAN_ID_DRIVE_RIGHT_SLAVE);
+		d_left = new CANTalonPair(Constants.CAN_ID_DRIVE_LEFT_MASTER, Constants.CAN_ID_DRIVE_LEFT_SLAVE, 5310.0, 6200.0, false, false);
+		d_right = new CANTalonPair(Constants.CAN_ID_DRIVE_RIGHT_MASTER, Constants.CAN_ID_DRIVE_RIGHT_SLAVE, 5310.0, 6200.0, false, false);
 		
-		d_leftSlave.changeControlMode(TalonControlMode.Follower);
-		d_leftSlave.set(d_leftMaster.getDeviceID());
-		
-		d_rightSlave.changeControlMode(TalonControlMode.Follower);
-		d_rightSlave.set(d_rightMaster.getDeviceID());
-		
-		d_driveSystem = new RobotDrive(d_leftMaster, d_rightMaster);
+		d_driveSystem = new RobotDrive(d_left, d_right);
 		
 	}
     // Put methods for controlling this subsystem
@@ -84,11 +73,11 @@ public class DriveSystem extends Subsystem {
     }
     
     public double getLeftSpeed() {
-    	return d_leftMaster.getSpeed();
+    	return d_left.getSpeed();
     }
     
     public double getRightSpeed() {
-    	return d_rightMaster.getSpeed();
+    	return d_right.getSpeed();
     }
 }
 
