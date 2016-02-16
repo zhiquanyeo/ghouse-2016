@@ -120,12 +120,10 @@ public class CANTalonPair implements SpeedController, MotorSafety, PIDOutput {
 		setTalonOutput(speed);
 	}
 
-	@Override
 	public void setInverted(boolean isInverted) {
 		d_isInverted = isInverted;
 	}
 
-	@Override
 	public boolean getInverted() {
 		return d_isInverted;
 	}
