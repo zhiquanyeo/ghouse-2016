@@ -5,6 +5,7 @@ import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
 import org.usfirst.frc.team354.robot.subsystems.MainArm;
 import org.usfirst.frc.team354.robot.subsystems.ShooterRoller;
 import org.usfirst.frc.team354.robot.subsystems.UpperArm;
+import org.usfirst.frc.team354.robot.vision.VisionSystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -28,6 +29,8 @@ public class Robot extends IterativeRobot {
 	public static final ShooterRoller lowerShooter = new ShooterRoller(Constants.CAN_ID_LOWER_SHOOTER_MASTER, Constants.CAN_ID_LOWER_SHOOTER_SLAVE);
 	public static final ShooterRoller upperShooter = new ShooterRoller(Constants.CAN_ID_UPPER_SHOOTER_MASTER, Constants.CAN_ID_UPPER_SHOOTER_SLAVE);
 	
+	public static final VisionSystem visionSystem = new VisionSystem();
+	
 	public static OI oi;
 
     Command autonomousCommand;
@@ -43,6 +46,7 @@ public class Robot extends IterativeRobot {
         // chooser.addDefault("Default Auto", new ExampleCommand());
 //        chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", chooser);
+       
     }
 	
 	/**
