@@ -37,10 +37,12 @@ public class CANTalonPair implements SpeedController, MotorSafety, PIDOutput {
 		if (d_slaveMaxRPM > d_masterMaxRPM) {
 			// Clamp to Master
 			d_masterFactor = 1.0;
+			d_slaveFactor = d_masterMaxRPM / d_slaveMaxRPM;
 		}
 		else if (d_slaveMaxRPM < d_masterMaxRPM) {
 			// Clamp to Slave
 			d_slaveFactor = 1.0;
+			d_masterFactor = d_slaveMaxRPM / d_masterMaxRPM;
 		}
 		else {
 			// Run both at the same speed
@@ -136,5 +138,13 @@ public class CANTalonPair implements SpeedController, MotorSafety, PIDOutput {
 	
 	public double getSpeed() {
 		return d_master.getSpeed();
+	}
+	
+	public String toString() {
+		return "=== CAN TALON PAIR ===\n" +  
+		"Master Max RPM: " + d_masterMaxRPM + "\n" +
+		"Slave Max RPM: " + d_slaveMaxRPM + "\n" + 
+		"Master Factor: " + d_masterFactor + "\n" +
+		"Slave Factor: " + d_slaveFactor + "\n";
 	}
 }

@@ -9,16 +9,45 @@ public class VisionProcessing {
 	
 	// Static Methods for calculating distances
 	public static double distanceToTarget(VisionTarget target) {
-		double theta = VisionConstants.CameraConstants.LIFECAM_HORZ_VIEW_ANGLE / 2;
-		return (VisionSystem.TARGET_WIDTH * VisionSystem.CAMERA_X_RES) / (2 * target.getWidth() * Math.tan(Math.toRadians(theta)));
+		return distanceToTarget(target, false);
 	}
 	
+	// Calculating using the vertical is a little bit more accurate
+	public static double distanceToTarget(VisionTarget target, boolean useHoriz) {
+		double theta;
+		if (useHoriz) {
+			theta = VisionConstants.CameraConstants.LIFECAM_HORZ_VIEW_ANGLE / 2;
+			return (VisionSystem.TARGET_WIDTH * VisionSystem.CAMERA_X_RES) / (2 * target.getWidth() * Math.tan(Math.toRadians(theta)));
+		}
+		else {
+			theta = VisionConstants.CameraConstants.LIFECAM_VERT_VIEW_ANGLE / 2;
+			return (VisionSystem.TARGET_HEIGHT * VisionSystem.CAMERA_Y_RES) / (2 * target.getHeight() * Math.tan(Math.toRadians(theta)));
+		}
+	}
+	
+	// TODO This calculation needs work
+	// Based on angle of camera and distance away from center
+	// SO MUCH MATH
 	public static double flatlineDistance(VisionTarget target) {
 		// vert = height of target above ground - height of camera
 		// hyp = distanceToTarget(target)
 		double hyp = distanceToTarget(target);
 		double vert = VisionSystem.TARGET_HEIGHT_ABOVE_GROUND - VisionSystem.CAMERA_HEIGHT;
 		return Math.sqrt((hyp * hyp) - (vert * vert));
+	}
+	
+	//d = Tft*FOVpixel/(2*Tpixel*tanΘ)
+	// 
+	
+	public static double effectiveTargetWidth(VisionTarget target) {
+		// Calculate the height of the bounding box and use that to "guess" the distance. Then use the distance
+		// to see how wide the target is. 
+		// Note: Since GRIP doesn't broadcast oriented bounding boxes, this could have some inaccuracy if we are
+		// heading towards a target at an angle. We can use convexHullAngleScore as a measure of confidence
+		double dist = flatlineDistance(target);
+		
+		// T_in = 2 * T_px * tan(theta) * d / FOV_px
+		return (2 * target.getWidth() * Math.tan(Math.toRadians(VisionConstants.CameraConstants.LIFECAM_HORZ_VIEW_ANGLE / 2)) * dist) / VisionSystem.CAMERA_X_RES;
 	}
 	
 	public static double widthInFeet(double knownPix, double knownFt, double widthPix) {

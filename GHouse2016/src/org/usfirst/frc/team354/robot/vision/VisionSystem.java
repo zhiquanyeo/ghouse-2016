@@ -78,6 +78,12 @@ public class VisionSystem {
 			// As the ratio approaches 1, the target is better aligned
 			double convexHullArea = d_area / d_solidity;
 			d_convexHullAngleScore = (convexHullArea / (d_width * d_height)) * 100;
+			
+			// Calculate the height of the bounding box and use that to "guess" the distance. Then use the distance
+			// to see how wide the target is. 
+			// Note: Since GRIP doesn't broadcast oriented bounding boxes, this could have some inaccuracy if we are
+			// heading towards a target at an angle. We can use convexHullAngleScore as a measure of confidence
+			
 		}
 		
 		public double getCenterX() {

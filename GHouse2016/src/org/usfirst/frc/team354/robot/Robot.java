@@ -5,9 +5,12 @@ import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
 import org.usfirst.frc.team354.robot.subsystems.MainArm;
 import org.usfirst.frc.team354.robot.subsystems.ShooterRoller;
 import org.usfirst.frc.team354.robot.subsystems.UpperArm;
+import org.usfirst.frc.team354.robot.vision.VisionProcessing;
 import org.usfirst.frc.team354.robot.vision.VisionSystem;
+import org.usfirst.frc.team354.robot.vision.VisionSystem.VisionTarget;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -46,7 +49,20 @@ public class Robot extends IterativeRobot {
         // chooser.addDefault("Default Auto", new ExampleCommand());
 //        chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", chooser);
+        
        
+//        while (true) {
+//        	VisionTarget bestTarget = visionSystem.getBestTarget();
+//        	if (bestTarget != null) {
+//        		double distanceToTarget = VisionProcessing.distanceToTarget(bestTarget);
+//        		double effectiveWidth = VisionProcessing.effectiveTargetWidth(bestTarget);
+//        		double flatlineDistance = VisionProcessing.flatlineDistance(bestTarget);
+//        		
+//        		System.out.println("Dist: " + distanceToTarget + ", flat dist: " + flatlineDistance + ", eff. width: " + effectiveWidth);
+//        	}
+//        	driveSystem.arcadeDrive(0.5, 0.0);
+//        	Timer.delay(1);
+//        }
     }
 	
 	/**
