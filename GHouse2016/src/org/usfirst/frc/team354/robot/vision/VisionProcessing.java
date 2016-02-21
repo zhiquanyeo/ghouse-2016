@@ -1,54 +1,95 @@
 package org.usfirst.frc.team354.robot.vision;
 
+import org.usfirst.frc.team354.robot.vision.VisionSystem.Coords;
 import org.usfirst.frc.team354.robot.vision.VisionSystem.VisionTarget;
 
 public class VisionProcessing {
 	
+	// Angle Constants - Precalculate
+	private static final double TAN_CAMERA_THETA_HORZ = Math.tan(Math.toRadians(VisionConstants.CameraConstants.LIFECAM_HORZ_VIEW_ANGLE / 2));
+	private static final double TAN_CAMERA_THETA_VERT = Math.tan(Math.toRadians(VisionConstants.CameraConstants.LIFECAM_VERT_VIEW_ANGLE / 2));
+	private static final double TAN_CAMERA_MOUNT_ANGLE_THETA = Math.tan(Math.toRadians(VisionSystem.CAMERA_ANGLE));
+	
+	// From pure H/V values
+	private static final double ERR_HORZ_DIST = 27.604; // TODO: Find the error for this
+	private static final double ERR_VERT_DIST = 27.604;
+	
+	// From corrected Vertical
+	private static final double ERR_CORR_VERT_DIST = 184;
+	
+	// Pixel offset values for aiming
+	private static final int AIM_PIXEL_X_OFFSET = 25;
+	
 	public static double viewAngle = 25;
 	public static int cameraRes = 640;
 	
-	// Static Methods for calculating distances
-	public static double distanceToTarget(VisionTarget target) {
-		return distanceToTarget(target, false);
-	}
-	
-	// Calculating using the vertical is a little bit more accurate
-	public static double distanceToTarget(VisionTarget target, boolean useHoriz) {
-		double theta;
-		if (useHoriz) {
-			theta = VisionConstants.CameraConstants.LIFECAM_HORZ_VIEW_ANGLE / 2;
-			return (VisionSystem.TARGET_WIDTH * VisionSystem.CAMERA_X_RES) / (2 * target.getWidth() * Math.tan(Math.toRadians(theta)));
+	// distanceToTargetRaw - Measures using uncorrected vertical/horizontal widths
+	// distanceToTargetCorrected - Measures using a camera-angle corrected height of target
+	/**
+	 * Calculate the distance to target using purely vision measurements.
+	 * 
+	 * This method does not take into account skew from the camera mounting angle
+	 * 
+	 * Most accurate when looking at a target head on
+	 * @param target A VisionTarget
+	 * @param useHorizontal Whether or not to use the width for measurement. Defaults to using height
+	 * @return Distance in inches to target
+	 */
+	public static double distanceToTargetRaw(VisionTarget target, boolean useHorizontal) {
+		if (useHorizontal) {
+			return ((VisionSystem.TARGET_WIDTH * VisionSystem.CAMERA_X_RES) / (2 * target.getWidth() * TAN_CAMERA_THETA_HORZ)) - ERR_HORZ_DIST;
 		}
 		else {
-			theta = VisionConstants.CameraConstants.LIFECAM_VERT_VIEW_ANGLE / 2;
-			return (VisionSystem.TARGET_HEIGHT * VisionSystem.CAMERA_Y_RES) / (2 * target.getHeight() * Math.tan(Math.toRadians(theta)));
+			return ((VisionSystem.TARGET_HEIGHT * VisionSystem.CAMERA_Y_RES) / (2 * target.getHeight() * TAN_CAMERA_THETA_VERT)) - ERR_VERT_DIST;
 		}
 	}
 	
-	// TODO This calculation needs work
-	// Based on angle of camera and distance away from center
-	// SO MUCH MATH
-	public static double flatlineDistance(VisionTarget target) {
-		// vert = height of target above ground - height of camera
-		// hyp = distanceToTarget(target)
-		double hyp = distanceToTarget(target);
-		double vert = VisionSystem.TARGET_HEIGHT_ABOVE_GROUND - VisionSystem.CAMERA_HEIGHT;
-		return Math.sqrt((hyp * hyp) - (vert * vert));
+	/**
+	 * Calculate the distance to target using camera-angle corrected height.
+	 * 
+	 * Most accurate when looking at a target head-on
+	 * @param target A VisionTarget
+	 * @return Distance in inches to target
+	 */
+	public static double distanceToTargetCorrected(VisionTarget target) {
+		double actualHeight = target.getHeight() * TAN_CAMERA_MOUNT_ANGLE_THETA;
+		return ((VisionSystem.TARGET_HEIGHT * VisionSystem.CAMERA_Y_RES) / (2 * actualHeight * TAN_CAMERA_THETA_VERT)) - ERR_CORR_VERT_DIST;
 	}
+	
+	/**
+	 * Return a set of aiming coordinates for the target
+	 * 
+	 * The coordinate system is set up such that (0,0) is center of aim and axes grow up and right
+	 * @param target A VisionTarget
+	 * @return Coordinates of the target relative to the shooter exit
+	 */
+	public static Coords aimingCoordinates(VisionTarget target) {
+		double aimX = ((target.getCenterX() - AIM_PIXEL_X_OFFSET) - (VisionSystem.CAMERA_X_RES / 2)) / (VisionSystem.CAMERA_X_RES / 2);
+		if (aimX < -1.0) aimX = -1.0;
+		if (aimX > 1.0) aimX = 1.0;
+		
+		double aimY = (target.getCenterY() - (VisionSystem.CAMERA_Y_RES / 2)) / (VisionSystem.CAMERA_Y_RES / 2);
+		if (aimY < -1.0) aimY = -1.0;
+		if (aimY > 1.0) aimY = 1.0;
+		
+		return new Coords(aimX, -aimY);
+	}
+	
+	/**
+	 * Calculate the number of degrees to turn the robot in order to center with the target
+	 * 
+	 * Positive numbers indicate clockwise, negative indicate counter clockwise
+	 * @param target A VisionTarget
+	 * @return Number of degrees to pivot
+	 */
+	public static double degreesForAlignment(VisionTarget target) {
+		Coords aimCoords = aimingCoordinates(target);
+		return Math.toDegrees(Math.asin(aimCoords.getX()));
+	}
+	
 	
 	//d = Tft*FOVpixel/(2*Tpixel*tanΘ)
 	// 
-	
-	public static double effectiveTargetWidth(VisionTarget target) {
-		// Calculate the height of the bounding box and use that to "guess" the distance. Then use the distance
-		// to see how wide the target is. 
-		// Note: Since GRIP doesn't broadcast oriented bounding boxes, this could have some inaccuracy if we are
-		// heading towards a target at an angle. We can use convexHullAngleScore as a measure of confidence
-		double dist = flatlineDistance(target);
-		
-		// T_in = 2 * T_px * tan(theta) * d / FOV_px
-		return (2 * target.getWidth() * Math.tan(Math.toRadians(VisionConstants.CameraConstants.LIFECAM_HORZ_VIEW_ANGLE / 2)) * dist) / VisionSystem.CAMERA_X_RES;
-	}
 	
 	public static double widthInFeet(double knownPix, double knownFt, double widthPix) {
 		return (knownFt * widthPix)/knownPix;

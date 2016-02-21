@@ -1,6 +1,8 @@
 package org.usfirst.frc.team354.robot;
 
 public class Constants {
+	public static final boolean DEBUG = true;
+	
 	public static final double DRIVE_EXPO_VALUE = 4.0;
 	
 	// === Analog Input Channels ===

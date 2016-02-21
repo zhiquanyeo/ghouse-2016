@@ -1,16 +1,15 @@
 
 package org.usfirst.frc.team354.robot;
 
+import org.usfirst.frc.team354.robot.commands.autonomous.base.AutoTurnToVisionTarget;
 import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
-import org.usfirst.frc.team354.robot.subsystems.MainArm;
-import org.usfirst.frc.team354.robot.subsystems.ShooterRoller;
-import org.usfirst.frc.team354.robot.subsystems.UpperArm;
-import org.usfirst.frc.team354.robot.vision.VisionProcessing;
 import org.usfirst.frc.team354.robot.vision.VisionSystem;
-import org.usfirst.frc.team354.robot.vision.VisionSystem.VisionTarget;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -27,12 +26,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	
 	public static final DriveSystem driveSystem = new DriveSystem();
-	public static final MainArm mainArm = new MainArm();
-	public static final UpperArm upperArm = new UpperArm();
-	public static final ShooterRoller lowerShooter = new ShooterRoller(Constants.CAN_ID_LOWER_SHOOTER_MASTER, Constants.CAN_ID_LOWER_SHOOTER_SLAVE);
-	public static final ShooterRoller upperShooter = new ShooterRoller(Constants.CAN_ID_UPPER_SHOOTER_MASTER, Constants.CAN_ID_UPPER_SHOOTER_SLAVE);
-	
+//	public static final MainArm mainArm = new MainArm();
+//	public static final UpperArm upperArm = new UpperArm();
+//	public static final ShooterRoller lowerShooter = new ShooterRoller(Constants.CAN_ID_LOWER_SHOOTER_MASTER, Constants.CAN_ID_LOWER_SHOOTER_SLAVE);
+//	public static final ShooterRoller upperShooter = new ShooterRoller(Constants.CAN_ID_UPPER_SHOOTER_MASTER, Constants.CAN_ID_UPPER_SHOOTER_SLAVE);
+//	
 	public static final VisionSystem visionSystem = new VisionSystem();
+	
+	public static AHRS ahrs;
 	
 	public static OI oi;
 
@@ -44,25 +45,27 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+    	// Start up VisionSystem
+    	visionSystem.initialize();
+    	
+    	// Set up CameraServer
+    	
+    	// Set up AHRS
+    	try {
+    		ahrs = new AHRS(I2C.Port.kMXP);
+    	}
+    	catch (RuntimeException e) {
+    		DriverStation.reportError("Error instantiating navX MXP: " + e.getMessage(), true);
+    	}
+    	
 		oi = new OI();
         chooser = new SendableChooser();
+        chooser.addDefault("Turn To Vision Target", new AutoTurnToVisionTarget());
         // chooser.addDefault("Default Auto", new ExampleCommand());
 //        chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", chooser);
         
-       
-//        while (true) {
-//        	VisionTarget bestTarget = visionSystem.getBestTarget();
-//        	if (bestTarget != null) {
-//        		double distanceToTarget = VisionProcessing.distanceToTarget(bestTarget);
-//        		double effectiveWidth = VisionProcessing.effectiveTargetWidth(bestTarget);
-//        		double flatlineDistance = VisionProcessing.flatlineDistance(bestTarget);
-//        		
-//        		System.out.println("Dist: " + distanceToTarget + ", flat dist: " + flatlineDistance + ", eff. width: " + effectiveWidth);
-//        	}
-//        	driveSystem.arcadeDrive(0.5, 0.0);
-//        	Timer.delay(1);
-//        }
+        System.out.println("[ROBOT] Robot Initialized");
     }
 	
 	/**

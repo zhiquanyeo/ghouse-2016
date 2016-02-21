@@ -13,8 +13,8 @@ public class VisionSystem {
 	//			v -ve
 	public static final double CAMERA_LATERAL_OFFSET = -6.0; // inches from center of shooter
 	public static final double CAMERA_FOREAFT_OFFSET = 3.0; // inches from shooter exit
-	public static final double CAMERA_HEIGHT = 8.0; // inches off the ground
-	public static final double CAMERA_ANGLE = 10.0; // degrees
+	public static final double CAMERA_HEIGHT = 13.0; // inches off the ground
+	public static final double CAMERA_ANGLE = 30.0; // degrees
 	
 	public static final double CAMERA_X_RES = 320;
 	public static final double CAMERA_Y_RES = 240;
@@ -34,6 +34,35 @@ public class VisionSystem {
 	public static final double INVERSE_OPTIMUM_COVERAGE_AREA = 1.0 / OPTIMUM_COVERAGE_AREA;
 	
 	// NOTE: We want to compare solidity to OPTIMUM_COVERAGE_AREA
+	public static class Coords {
+		private double d_x;
+		private double d_y;
+		
+		public Coords(double x, double y) {
+			d_x = x;
+			d_y = y;
+		}
+		
+		public double getX() {
+			return d_x;
+		}
+		
+		public double getY() {
+			return d_y;
+		}
+		
+		public void setX(double x) {
+			d_x = x;
+		}
+		
+		public void setY(double y) {
+			d_y = y;
+		}
+		
+		public String toString() {
+			return "(" + d_x + ", " + d_y + ")";
+		}
+	}
 	
 	public static class VisionTarget {
 		private double d_centerX;
@@ -143,8 +172,14 @@ public class VisionSystem {
 	
 	private NetworkTable d_gripTable;
 	
+	private boolean d_initialized = false;
+	
 	public VisionSystem() {
+	}
+	
+	public void initialize() {
 		d_gripTable = NetworkTable.getTable("GRIP/myContoursReport");
+		d_initialized = true;
 	}
 	
 	/**
@@ -152,6 +187,10 @@ public class VisionSystem {
 	 * @return An array of vision targets
 	 */
 	public VisionTarget[] getTargets() {
+		if (!d_initialized) {
+			return new VisionTarget[0];
+		}
+		
 		// Attempt to get data from network tables
 		double[] defaultValues = new double[0];
 		double[] areas = d_gripTable.getNumberArray("area", defaultValues);
@@ -196,6 +235,9 @@ public class VisionSystem {
 				highestScoreIdx = i;
 			}
 		}
+		
+		// TBD: Generate a fake GRIP/bestTargetReport table and post
+		// the bounding box to it
 		
 		return targets[highestScoreIdx];
 	}
