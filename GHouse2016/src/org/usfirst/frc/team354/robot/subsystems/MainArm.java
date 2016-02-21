@@ -14,16 +14,24 @@ public class MainArm extends PIDSubsystem {
 	private CANTalon d_motor = new CANTalon(Constants.CAN_ID_MAIN_ARM);
 	private AnalogInput d_armPot = new AnalogInput(Constants.AIN_MAIN_ARM_POT);
 	
+	public static final double ARM_FULLY_LOWERED = 0.0;
+	public static final double ARM_BALL_INTAKE = 20.0;
+	public static final double ARM_CLIMB_INITIAL = 95.0;
+	public static final double ARM_CLIMB_CURL = 66.0;
+	
+	private double d_setAngle = 0.0;
+	
     // Initialize your subsystem here
     public MainArm() {
     	super("MainArm", 0.1, 0.0, 0.0); // P, I, D
     	
     	getPIDController().setContinuous(false);
     	enable();
-        // Use these to get going:
-        // setSetpoint() -  Sets where the PID controller should move the system
-        //                  to
-        // enable() - Enables the PID controller.
+    }
+    
+    public void setAngle(double angle) {
+    	d_setAngle = 0.0;
+    	setSetpoint(d_setAngle);
     }
     
     public void initDefaultCommand() {

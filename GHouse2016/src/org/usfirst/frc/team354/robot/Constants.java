@@ -1,8 +1,6 @@
 package org.usfirst.frc.team354.robot;
 
 public class Constants {
-	public static final boolean DEBUG = true;
-	
 	public static final double DRIVE_EXPO_VALUE = 4.0;
 	
 	// === Analog Input Channels ===
@@ -11,6 +9,10 @@ public class Constants {
 	
 	// Upper Arm
 	public static final int AIN_UPPER_ARM_POT = 1;
+	
+	// === Digital I/O Channels ===
+	// Intake System
+	public static final int DIN_INTAKE_BEAMBREAK = 0;
 	
 	// === CAN IDs ===
 	// Drive System
@@ -35,4 +37,5 @@ public class Constants {
 	
 	// Intake
 	public static final int CAN_ID_INTAKE = 30;
+	
 }

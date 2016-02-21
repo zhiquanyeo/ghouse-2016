@@ -10,9 +10,14 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
  *
  */
 public class UpperArm extends PIDSubsystem {
-
+	
+	public static final double ARM_FULLY_LOWERED = 0.0;
+	public static final double ARM_FULLY_EXTENDED = 180.0;
+	
 	private CANTalon d_motor = new CANTalon(Constants.CAN_ID_UPPER_ARM);
 	private AnalogInput d_armPot = new AnalogInput(Constants.AIN_UPPER_ARM_POT);
+	
+	private double d_setAngle = 0.0;
 	
     // Initialize your subsystem here
     public UpperArm() {
@@ -26,6 +31,11 @@ public class UpperArm extends PIDSubsystem {
         // enable() - Enables the PID controller.
     }
     
+    public void setAngle(double angle) {
+    	d_setAngle = angle;
+    	setSetpoint(d_setAngle);
+    }
+    
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
@@ -35,6 +45,7 @@ public class UpperArm extends PIDSubsystem {
         // Return your input value for the PID loop
         // e.g. a sensor, like a potentiometer:
         // yourPot.getAverageVoltage() / kYourMaxVoltage;
+    	// TODO: Convert voltage to degrees
     	return d_armPot.getAverageVoltage();
     }
     
