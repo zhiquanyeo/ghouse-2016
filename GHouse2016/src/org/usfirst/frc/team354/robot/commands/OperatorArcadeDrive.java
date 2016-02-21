@@ -1,18 +1,18 @@
 package org.usfirst.frc.team354.robot.commands;
 
+import edu.wpi.first.wpilibj.command.Command;
+
 import org.usfirst.frc.team354.robot.Constants;
 import org.usfirst.frc.team354.robot.Robot;
-
-import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class OperatorTankDrive extends Command {
+public class OperatorArcadeDrive extends Command {
 	private double maxSpeed = 1.0;
-	
-	//if maxSpeed is negative, direction is reversed
-    public OperatorTankDrive(double maxSpeed) {
+
+	//maxSpeed is negative if in reverse mode
+    public OperatorArcadeDrive(double maxSpeed) {
     	if (maxSpeed > 1.0) {
     		maxSpeed = 1.0;
     	}
@@ -26,23 +26,23 @@ public class OperatorTankDrive extends Command {
     }
     
     public String getName() {
-    	return "OperatorTankDrive - " + maxSpeed;
+    	return "OperatorArcadeDrive - " + maxSpeed;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double leftSpeed = expo(Robot.oi.getDriverStickLeftY(), Constants.DRIVE_EXPO_VALUE);
-    	double rightSpeed = expo(Robot.oi.getDriverStickRightY(), Constants.DRIVE_EXPO_VALUE);
+    	double moveValue = Robot.oi.getDriverStickLeftY(); 
+    	double rotateValue = Robot.oi.getDriverStickRightX(); 
     	
-    	leftSpeed *= maxSpeed;
-    	rightSpeed *= maxSpeed;
+    	moveValue *= maxSpeed;
+    	if (moveValue < 0)
+    		rotateValue *= -1;
     	
-    	Robot.driveSystem.tankDrive(leftSpeed, rightSpeed);
+    	Robot.driveSystem.arcadeDrive(moveValue, rotateValue);
     }
 
     // Make this return true when this Command no longer needs to run execute()

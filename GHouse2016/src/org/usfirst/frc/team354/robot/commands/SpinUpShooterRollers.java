@@ -7,11 +7,17 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class IntakeBallFromGround extends Command {
+public class SpinUpShooterRollers extends Command {
+	private double rpmLower = -1;
+	private double rpmUpper = -1;
 
-    public IntakeBallFromGround() {
-        
-    	requires(Robot.intakeSystem);
+    public SpinUpShooterRollers(double rpmLower, double rpmUpper) {
+    	
+    	this.rpmLower = rpmLower;
+    	this.rpmUpper = rpmUpper;
+    	
+    	requires(Robot.lowerShooter);
+    	requires(Robot.upperShooter);
     }
 
     // Called just before this Command runs the first time
@@ -20,12 +26,13 @@ public class IntakeBallFromGround extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.intakeSystem.startLowerIntake(false);
+    	Robot.lowerShooter.setSpeed(rpmLower);
+    	Robot.upperShooter.setSpeed(rpmUpper);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.intakeSystem.ballPresent();
+        return (Robot.lowerShooter.getSpeed() == rpmLower && Robot.upperShooter.getSpeed() == rpmUpper);
     }
 
     // Called once after isFinished returns true

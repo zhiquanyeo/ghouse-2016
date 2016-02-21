@@ -14,7 +14,8 @@ public class IntakeSystem extends Subsystem {
 	private static final double FORWARD_FEED_SPEED = 0.5;
 	private static final double REVERSE_FEED_SPEED = -0.5;
 	
-    private CANTalon d_motor = new CANTalon(Constants.CAN_ID_INTAKE);
+    private CANTalon d_lowerMotor = new CANTalon(Constants.CAN_ID_INTAKE);
+    private CANTalon d_upperMotor = new CANTalon(Constants.CAN_ID_INTAKE);
     private DigitalInput d_beamBreak = new DigitalInput(Constants.DIN_INTAKE_BEAMBREAK);
 
     public void initDefaultCommand() {
@@ -22,17 +23,30 @@ public class IntakeSystem extends Subsystem {
         //setDefaultCommand(new MySpecialCommand());
     }
     
-    public void startIntake(boolean reverse) {
+    public void startLowerIntake(boolean reverse) {
     	if (reverse) {
-    		d_motor.set(REVERSE_FEED_SPEED);
+    		d_lowerMotor.set(REVERSE_FEED_SPEED);
     	}
     	else {
-    		d_motor.set(FORWARD_FEED_SPEED);
+    		d_lowerMotor.set(FORWARD_FEED_SPEED);
     	}
     }
     
-    public void stopIntake() {
-    	d_motor.set(0);
+    public void startUpperIntake(boolean reverse) {
+    	if (reverse) {
+    		d_upperMotor.set(REVERSE_FEED_SPEED);
+    	}
+    	else {
+    		d_upperMotor.set(FORWARD_FEED_SPEED);
+    	}
+    }
+    
+    public void stopLowerIntake() {
+    	d_lowerMotor.set(0);
+    }
+    
+    public void stopUpperIntake() {
+    	d_upperMotor.set(0);
     }
     
     public boolean ballPresent() {

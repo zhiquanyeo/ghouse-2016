@@ -18,6 +18,8 @@ public class MainArm extends PIDSubsystem {
 	public static final double ARM_BALL_INTAKE = 20.0;
 	public static final double ARM_CLIMB_INITIAL = 95.0;
 	public static final double ARM_CLIMB_CURL = 66.0;
+	public static final double ARM_RAISE_SPEED = 0.5;
+	public static final double ARM_LOWER_SPEED = -0.3;
 	
 	private double d_setAngle = 0.0;
 	
@@ -32,6 +34,18 @@ public class MainArm extends PIDSubsystem {
     public void setAngle(double angle) {
     	d_setAngle = 0.0;
     	setSetpoint(d_setAngle);
+    }
+    
+    public void raise() {
+    	d_motor.set(ARM_RAISE_SPEED);
+    }
+    
+    public void lower() {
+    	d_motor.set(ARM_LOWER_SPEED);
+    }
+    
+    public void stop() {
+    	d_motor.set(0);
     }
     
     public void initDefaultCommand() {
