@@ -6,6 +6,8 @@ import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
 import org.usfirst.frc.team354.robot.subsystems.IntakeSystem;
 import org.usfirst.frc.team354.robot.subsystems.MainArm;
 import org.usfirst.frc.team354.robot.subsystems.ShooterRoller;
+import org.usfirst.frc.team354.robot.subsystems.UpperArm;
+import org.usfirst.frc.team354.robot.subsystems.Winch;
 import org.usfirst.frc.team354.robot.vision.VisionSystem;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -30,10 +32,11 @@ public class Robot extends IterativeRobot {
 	
 	public static final DriveSystem driveSystem = new DriveSystem();
 	public static final MainArm mainArm = new MainArm();
-//	public static final UpperArm upperArm = new UpperArm();
+	public static final UpperArm upperArm = new UpperArm();
 	public static final ShooterRoller lowerShooter = new ShooterRoller(Constants.CAN_ID_LOWER_SHOOTER_MASTER, Constants.CAN_ID_LOWER_SHOOTER_SLAVE);
 	public static final ShooterRoller upperShooter = new ShooterRoller(Constants.CAN_ID_UPPER_SHOOTER_MASTER, Constants.CAN_ID_UPPER_SHOOTER_SLAVE);
 	public static final IntakeSystem intakeSystem = new IntakeSystem();
+	public static final Winch winch = new Winch();
 	
 	public static final VisionSystem visionSystem = new VisionSystem();
 	

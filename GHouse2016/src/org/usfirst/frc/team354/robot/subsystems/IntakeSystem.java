@@ -14,8 +14,8 @@ public class IntakeSystem extends Subsystem {
 	private static final double FORWARD_FEED_SPEED = 0.5;
 	private static final double REVERSE_FEED_SPEED = -0.5;
 	
-    private CANTalon d_lowerMotor = new CANTalon(Constants.CAN_ID_INTAKE);
-    private CANTalon d_upperMotor = new CANTalon(Constants.CAN_ID_INTAKE);
+    private CANTalon d_lowerMotor = new CANTalon(Constants.CAN_ID_LOWER_INTAKE);
+    private CANTalon d_upperMotor = new CANTalon(Constants.CAN_ID_UPPER_INTAKE);
     private DigitalInput d_beamBreak = new DigitalInput(Constants.DIN_INTAKE_BEAMBREAK);
 
     public void initDefaultCommand() {
