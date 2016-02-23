@@ -31,14 +31,14 @@ public class Constants {
 	public static final int CAN_ID_LOWER_SHOOTER_SLAVE = 22;
 	
 	// Main Arm
-	public static final int CAN_ID_MAIN_ARM = 28; // TODO Set
+	public static final int CAN_ID_MAIN_ARM = 27;
 	
 	// Upper Arm
 	public static final int CAN_ID_UPPER_ARM = 29; // TODO Set
 	
 	// Intake
 	public static final int CAN_ID_LOWER_INTAKE = 27; // TODO Set
-	public static final int CAN_ID_UPPER_INTAKE = 31; // TODO Set
+	public static final int CAN_ID_UPPER_INTAKE = 31;
 	
 	// Winch
 	public static final int CAN_ID_WINCH = 23;
