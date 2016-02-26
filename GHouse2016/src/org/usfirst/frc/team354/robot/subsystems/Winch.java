@@ -5,6 +5,7 @@ import org.usfirst.frc.team354.robot.Constants;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *
@@ -15,6 +16,11 @@ public class Winch extends Subsystem {
 	private DigitalInput d_limitSwitch = new DigitalInput(Constants.DIN_WINCH_LIMIT_SWITCH);
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
+	
+	public Winch() {
+		LiveWindow.addActuator("Winch", "Winch Motor", d_motor);
+		LiveWindow.addSensor("Winch", "Winch Limit Switch", d_limitSwitch);
+	}
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.

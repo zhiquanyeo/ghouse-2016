@@ -5,6 +5,7 @@ import org.usfirst.frc.team354.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *
@@ -29,11 +30,18 @@ public class UpperArm extends PIDSubsystem {
         // setSetpoint() -  Sets where the PID controller should move the system
         //                  to
         // enable() - Enables the PID controller.
+    	
+    	LiveWindow.addActuator("UpperArm", "Upper Arm Motor", d_motor);
+    	LiveWindow.addSensor("UpperArm", "Upper Arm Potentiometer", d_armPot);
     }
     
     public void setAngle(double angle) {
     	d_setAngle = angle;
     	setSetpoint(d_setAngle);
+    }
+    
+    public double getAngle() {
+    	return d_armPot.getAverageVoltage();
     }
     
     public void initDefaultCommand() {

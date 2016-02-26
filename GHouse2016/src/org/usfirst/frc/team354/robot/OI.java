@@ -1,5 +1,7 @@
 package org.usfirst.frc.team354.robot;
 
+import org.usfirst.frc.team354.robot.commands.OperatorTankDrive;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
@@ -39,6 +41,8 @@ public class OI {
 	
 	public OI() {
 		driverStick = new Joystick(RobotMap.driverJoystick);
+		
+		getButton(RobotMap.driverJoystick, 7).whileHeld(new OperatorTankDrive(1.0, true));
 	}
 	
 	// NOTE - This assumes using a gamepad with 2x analog sticks

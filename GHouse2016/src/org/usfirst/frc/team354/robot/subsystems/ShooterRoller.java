@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * A class representing a Shooter mechanism controlled by 2 Talon SRX controllers
@@ -18,13 +19,17 @@ public class ShooterRoller extends Subsystem {
 	
 	private double d_speed = 0.0;
 	
-	public ShooterRoller(int masterId, int slaveId) {
-		this(masterId, slaveId, false);
+	public String d_shooterName;
+	
+	public ShooterRoller(String name, int masterId, int slaveId) {
+		this(name, masterId, slaveId, false);
 	}
 	
-	public ShooterRoller(int masterId, int slaveId, boolean reverse) {
+	public ShooterRoller(String name, int masterId, int slaveId, boolean reverse) {
 		d_motorMaster = new CANTalon(masterId);
 		d_motorSlave = new CANTalon(slaveId);
+		
+		d_shooterName = name;
 		
 		// Set up slave mode
 		d_motorSlave.changeControlMode(TalonControlMode.Follower);
@@ -51,6 +56,11 @@ public class ShooterRoller extends Subsystem {
 		d_motorMaster.set(0.0);
 		
 		d_motorMaster.reverseOutput(reverse);
+		
+		// Set up the LiveWindow
+		LiveWindow.addActuator(d_shooterName, "Master Motor", d_motorMaster);
+		LiveWindow.addActuator(d_shooterName, "Slave Motor", d_motorSlave);
+		LiveWindow.addSensor(d_shooterName, "Shooter Encoder", d_motorMaster);
 	}
     
 	/**

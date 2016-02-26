@@ -9,10 +9,15 @@ import org.usfirst.frc.team354.robot.Robot;
  *
  */
 public class OperatorArcadeDrive extends Command {
-	private double maxSpeed = 1.0;
+	private double d_maxSpeed = 1.0;
+	private boolean d_isLowGear = false;
 
 	//maxSpeed is negative if in reverse mode
     public OperatorArcadeDrive(double maxSpeed) {
+    	this(maxSpeed, false);
+    }
+    
+    public OperatorArcadeDrive(double maxSpeed, boolean lowGear) {
     	if (maxSpeed > 1.0) {
     		maxSpeed = 1.0;
     	}
@@ -20,17 +25,24 @@ public class OperatorArcadeDrive extends Command {
     		maxSpeed = 0.0;
     	}
     		
-    	this.maxSpeed = maxSpeed;
+    	d_maxSpeed = maxSpeed;
+    	d_isLowGear = lowGear;
     	
         requires(Robot.driveSystem);
     }
     
     public String getName() {
-    	return "OperatorArcadeDrive - " + maxSpeed;
+    	return "OperatorArcadeDrive - " + d_maxSpeed + " " + (d_isLowGear ? "(LOW GEAR)" : "(HIGH GEAR)");
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	if (d_isLowGear) {
+    		Robot.driveSystem.setLowGear();
+    	}
+    	else {
+    		Robot.driveSystem.setHighGear();
+    	}
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -38,7 +50,7 @@ public class OperatorArcadeDrive extends Command {
     	double moveValue = Robot.oi.getDriverStickLeftY(); 
     	double rotateValue = Robot.oi.getDriverStickRightX(); 
     	
-    	moveValue *= maxSpeed;
+    	moveValue *= d_maxSpeed;
     	if (moveValue < 0)
     		rotateValue *= -1;
     	

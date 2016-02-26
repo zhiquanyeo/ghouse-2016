@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class CANTalonPair implements SpeedController, MotorSafety, PIDOutput {
 
@@ -23,13 +24,17 @@ public class CANTalonPair implements SpeedController, MotorSafety, PIDOutput {
 	private boolean d_isInverted = false;
 	private double d_setSpeed = 0.0;
 	
-	public CANTalonPair(int masterChannel, int slaveChannel, double masterMaxRPM, double slaveMaxRPM) {
-		this(masterChannel, slaveChannel, masterMaxRPM, slaveMaxRPM, false, false);
+	private String d_talonPairName;
+	
+	public CANTalonPair(String name, int masterChannel, int slaveChannel, double masterMaxRPM, double slaveMaxRPM) {
+		this(name, masterChannel, slaveChannel, masterMaxRPM, slaveMaxRPM, false, false);
 	}
 	
-	public CANTalonPair(int masterChannel, int slaveChannel, double masterMaxRPM, double slaveMaxRPM, boolean reverseMaster, boolean reverseSlave) {
+	public CANTalonPair(String name, int masterChannel, int slaveChannel, double masterMaxRPM, double slaveMaxRPM, boolean reverseMaster, boolean reverseSlave) {
 		d_master = new CANTalon(masterChannel);
 		d_slave = new CANTalon(slaveChannel);
+		
+		d_talonPairName = name;
 		
 		d_masterMaxRPM = masterMaxRPM;
 		d_slaveMaxRPM = slaveMaxRPM;
@@ -57,6 +62,9 @@ public class CANTalonPair implements SpeedController, MotorSafety, PIDOutput {
 		if (reverseSlave) {
 			d_slaveMultiplier = -1.0;
 		}
+		
+		LiveWindow.addActuator("DriveSystem", d_talonPairName + " - Master Motor", d_master);
+		LiveWindow.addActuator("DriveSystem", d_talonPairName + " - Slave Motor", d_slave);
 	}
 	
 	protected void setTalonOutput(double output) {

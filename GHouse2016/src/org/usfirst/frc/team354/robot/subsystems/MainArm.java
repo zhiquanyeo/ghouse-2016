@@ -5,6 +5,7 @@ import org.usfirst.frc.team354.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  *
@@ -29,11 +30,18 @@ public class MainArm extends PIDSubsystem {
     	
     	getPIDController().setContinuous(false);
     	enable();
+    	
+    	LiveWindow.addActuator("MainArm", "Main Arm Motor", d_motor);
+    	LiveWindow.addSensor("MainArm", "Main Arm Potentiometer", d_armPot);
     }
     
     public void setAngle(double angle) {
     	d_setAngle = 0.0;
     	setSetpoint(d_setAngle);
+    }
+    
+    public double getAngle() {
+    	return d_armPot.getAverageVoltage();
     }
     
     public void raise() {
