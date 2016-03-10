@@ -1,19 +1,27 @@
 package org.usfirst.frc.team354.robot;
 
 public class Constants {
-	public static final double DRIVE_EXPO_VALUE = 4.0;
+	public static final double DRIVE_EXPO_VALUE = 2.0;
 	
 	// === Analog Input Channels ===
 	// Main Arm
 	public static final int AIN_MAIN_ARM_POT = 3;
 	
 	// Upper Arm
-	public static final int AIN_UPPER_ARM_POT = 1; // TODO Set
+	public static final int AIN_UPPER_ARM_POT = 1;
+	
+	public static final int AIN_ULTRASONIC = 2;
 	
 	// === Digital I/O Channels ===
 	// Intake System
-	public static final int DIN_INTAKE_BEAMBREAK = 3;
-	public static final int DIN_WINCH_LIMIT_SWITCH = 1; // TODO set
+	public static final int DIN_INTAKE_BEAMBREAK = 2;
+	
+	// Winch
+	public static final int DIN_WINCH_HOOK_BAR_CONTACT_SWITCH = 3;
+	public static final int DIN_WINCH_LOWER_LIMIT_SWITCH = 4; 
+	
+	// Main Arm
+	public static final int DIN_MAIN_ARM_LOWER_LIMIT_SWITCH = 5;
 	
 	// === Pneumatic Channels ===
 	// Transmission

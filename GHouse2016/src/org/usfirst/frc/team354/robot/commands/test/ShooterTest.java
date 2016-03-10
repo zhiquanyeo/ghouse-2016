@@ -23,8 +23,8 @@ public class ShooterTest extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.lowerShooter.setSpeed(-Robot.oi.getDriverStickLeftY() * 100);
-    	Robot.upperShooter.setSpeed(-Robot.oi.getDriverStickRightY() * 100);
+    	//Robot.lowerShooter.setSpeed(-Robot.oi.getDriverStickLeftY() * 100);
+    	//Robot.upperShooter.setSpeed(-Robot.oi.getDriverStickRightY() * 100);
     	
     	SmartDashboard.putNumber("Lower Shooter Speed", Robot.lowerShooter.getSpeed());
     	SmartDashboard.putNumber("Upper Shooter Speed", Robot.upperShooter.getSpeed());

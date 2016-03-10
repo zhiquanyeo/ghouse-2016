@@ -47,9 +47,10 @@ public class OperatorArcadeDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double moveValue = Robot.oi.getDriverStickLeftY(); 
-    	double rotateValue = Robot.oi.getDriverStickRightX(); 
-    	
+    	//double moveValue = Robot.oi.getDriverStickLeftY(); 
+    	//double rotateValue = Robot.oi.getDriverStickRightX(); 
+    	double moveValue = 0;
+    	double rotateValue = 0;
     	moveValue *= d_maxSpeed;
     	if (moveValue < 0)
     		rotateValue *= -1;

@@ -21,11 +21,11 @@ public class ShooterRoller extends Subsystem {
 	
 	public String d_shooterName;
 	
-	public ShooterRoller(String name, int masterId, int slaveId) {
-		this(name, masterId, slaveId, false);
+	public ShooterRoller(String name, int masterId, int slaveId, double p, double i, double d, double f) {
+		this(name, masterId, slaveId, p, i, d, f, false);
 	}
 	
-	public ShooterRoller(String name, int masterId, int slaveId, boolean reverse) {
+	public ShooterRoller(String name, int masterId, int slaveId, double p, double i, double d, double f,  boolean reverse) {
 		d_motorMaster = new CANTalon(masterId);
 		d_motorSlave = new CANTalon(slaveId);
 		
@@ -37,22 +37,23 @@ public class ShooterRoller extends Subsystem {
 		
 		// Set up feedback+closed loop PID for the master
 		d_motorMaster.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		d_motorMaster.reverseSensor(false); // TBD: Set to true if we need to
+		d_motorMaster.reverseSensor(true); 
 		
 		// Set peak and nominal outputs
 		d_motorMaster.configNominalOutputVoltage(0.0, 0.0);
-		d_motorMaster.configPeakOutputVoltage(12.0, 0.0);
+		d_motorMaster.configPeakOutputVoltage(12.0, -12.0);
 		
 		// Set closed loop profile and PID gains
 		// TBD: Adjust P,I,D and F values
 		d_motorMaster.setProfile(0);
-		d_motorMaster.setF(0.1097);
-		d_motorMaster.setP(0.22);
-		d_motorMaster.setI(0.0);
-		d_motorMaster.setD(0.0);
+		d_motorMaster.setF(f);
+		d_motorMaster.setP(p);
+		d_motorMaster.setI(i);
+		d_motorMaster.setD(d);
 		
 		// Set the master to run in 'speed' mode, which allows us to specify pure RPMs
 		d_motorMaster.changeControlMode(TalonControlMode.Speed);
+		//d_motorMaster.changeControlMode(TalonControlMode.PercentVbus);
 		d_motorMaster.set(0.0);
 		
 		d_motorMaster.reverseOutput(reverse);
@@ -60,7 +61,6 @@ public class ShooterRoller extends Subsystem {
 		// Set up the LiveWindow
 		LiveWindow.addActuator(d_shooterName, "Master Motor", d_motorMaster);
 		LiveWindow.addActuator(d_shooterName, "Slave Motor", d_motorSlave);
-		LiveWindow.addSensor(d_shooterName, "Shooter Encoder", d_motorMaster);
 	}
     
 	/**

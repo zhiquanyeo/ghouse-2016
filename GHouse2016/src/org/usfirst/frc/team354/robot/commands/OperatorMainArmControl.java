@@ -1,15 +1,17 @@
 package org.usfirst.frc.team354.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-
 import org.usfirst.frc.team354.robot.Robot;
+
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class RaiseMainArm extends Command {
+public class OperatorMainArmControl extends Command {
 
-    public RaiseMainArm() {
+    public OperatorMainArmControl() {
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
     	requires(Robot.mainArm);
     }
 
@@ -19,9 +21,24 @@ public class RaiseMainArm extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.mainArm.raise();
+    	double value = Robot.oi.getGamepadRightStickY();
+    	if (value < 0) {
+    		value *= 0.75;
+    		Robot.mainArm.raiseAtSpeed(-value);
+    	}
+    	else if (value > 0) {
+    		value *= 0.4;
+    		if (!Robot.mainArm.isFullyLowered()) {
+    			Robot.mainArm.lowerAtSpeed(value);
+    		}
+    		else {
+    			Robot.mainArm.stop();
+    		}
+    	}
+    	else {
+    		Robot.mainArm.stop();
+    	}
     }
-    
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {

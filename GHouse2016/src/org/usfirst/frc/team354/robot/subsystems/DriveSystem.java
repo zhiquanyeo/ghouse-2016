@@ -46,6 +46,7 @@ public class DriveSystem extends Subsystem {
     	// For now, we will set it up as tank drive
     	//setDefaultCommand(new OperatorTankDrive(1.0));
         //setDefaultCommand(new OperatorArcadeDrive(1.0));
+    	setDefaultCommand(new OperatorTankDrive(1.0));
     }
     
     public void tankDrive(double leftValue, double rightValue) {

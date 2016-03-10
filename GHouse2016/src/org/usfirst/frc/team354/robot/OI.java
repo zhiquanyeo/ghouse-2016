@@ -1,6 +1,10 @@
 package org.usfirst.frc.team354.robot;
 
+import org.usfirst.frc.team354.robot.commands.ActivateGateMode;
+import org.usfirst.frc.team354.robot.commands.OperatorIntakeControl;
 import org.usfirst.frc.team354.robot.commands.OperatorTankDrive;
+import org.usfirst.frc.team354.robot.commands.RaiseMainArmToAngle;
+import org.usfirst.frc.team354.robot.subsystems.MainArm;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -37,35 +41,55 @@ public class OI {
     // until it is finished as determined by it's isFinished method.
     // button.whenReleased(new ExampleCommand());
 	
-	private final Joystick driverStick;
+	private final Joystick leftStick;
+	private final Joystick rightStick;
+	private final Joystick gamepad;
 	
 	public OI() {
-		driverStick = new Joystick(RobotMap.driverJoystick);
+		leftStick = new Joystick(RobotMap.leftJoystick);
+		rightStick = new Joystick(RobotMap.rightJoystick);
+		gamepad = new Joystick(RobotMap.gamepad);
 		
-		getButton(RobotMap.driverJoystick, 7).whileHeld(new OperatorTankDrive(1.0, true));
+		// Reverse Drive
+		getButton(RobotMap.leftJoystick, 1).whileHeld(new OperatorTankDrive(1.0, true));
+		
+		//getButton(RobotMap.gamepad, 4).whileHeld(new RaiseMainArm());
+		//getButton(RobotMap.gamepad, 2).whileHeld(new LowerMainArm());
+		
+		// Intake System
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_A).whileHeld(new OperatorIntakeControl(false)); // Forward (toward the robot)
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_B).whileHeld(new OperatorIntakeControl(true)); // Backward (away from the robot)
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_Y).whileHeld(new ActivateGateMode()); // Activate Gate Mode
+		
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_BACK).whenPressed(new RaiseMainArmToAngle(MainArm.ARM_STARTING_POSITION));
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_START).whenPressed(new RaiseMainArmToAngle(MainArm.ARM_BALL_INTAKE));
 	}
 	
-	// NOTE - This assumes using a gamepad with 2x analog sticks
-	public double getDriverStickLeftX() {
-		return driverStick.getRawAxis(0);
+	public double getLeftStickY() {
+		return leftStick.getRawAxis(1);
 	}
 	
-	public double getDriverStickLeftY() {
-		return driverStick.getRawAxis(1);
+	public double getRightStickY() {
+		return rightStick.getRawAxis(1);
 	}
 	
-	public double getDriverStickRightX() {
-		return driverStick.getRawAxis(2);
+	public double getGamepadLeftStickY() {
+		return gamepad.getRawAxis(1);
 	}
 	
-	public double getDriverStickRightY() {
-		return driverStick.getRawAxis(3);
+	public double getGamepadRightStickY() {
+		return gamepad.getRawAxis(3);
 	}
+	
 	
 	public JoystickButton getButton(int stick, int button) {
 		switch (stick) {
-			case RobotMap.driverJoystick:
-				return new JoystickButton(driverStick, button);
+			case RobotMap.leftJoystick:
+				return new JoystickButton(leftStick, button);
+			case RobotMap.rightJoystick:
+				return new JoystickButton(rightStick, button);
+			case RobotMap.gamepad:
+				return new JoystickButton(gamepad, button);
 			default:
 				return null;
 		}

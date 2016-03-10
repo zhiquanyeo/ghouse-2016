@@ -2,6 +2,7 @@ package org.usfirst.frc.team354.robot.commands;
 
 import org.usfirst.frc.team354.robot.Constants;
 import org.usfirst.frc.team354.robot.Robot;
+import org.usfirst.frc.team354.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -11,13 +12,14 @@ import edu.wpi.first.wpilibj.command.Command;
 public class OperatorTankDrive extends Command {
 	private double d_maxSpeed = 1.0;
 	private boolean d_isLowGear = false;
+	private boolean d_isReverse = false;
 	
-	//if maxSpeed is negative, direction is reversed
-    public OperatorTankDrive(double maxSpeed) {
-    	this(maxSpeed, false);
-    }
-    
-    public OperatorTankDrive(double maxSpeed, boolean lowGear) {
+	public OperatorTankDrive(double maxSpeed) {
+		this(maxSpeed, false);
+	}
+	
+	public OperatorTankDrive(double maxSpeed, boolean reverse) {
+		d_isReverse = reverse;
     	if (maxSpeed > 1.0) {
     		maxSpeed = 1.0;
     	}
@@ -26,7 +28,7 @@ public class OperatorTankDrive extends Command {
     	}
     		
     	d_maxSpeed = maxSpeed;
-    	d_isLowGear = lowGear;
+    	d_isLowGear = true;
     	
         requires(Robot.driveSystem);
     }
@@ -47,13 +49,34 @@ public class OperatorTankDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double leftSpeed = expo(-Robot.oi.getDriverStickLeftY(), Constants.DRIVE_EXPO_VALUE);
-    	double rightSpeed = expo(-Robot.oi.getDriverStickRightY(), Constants.DRIVE_EXPO_VALUE);
+    	double leftSpeed = expo(-Robot.oi.getLeftStickY(), Constants.DRIVE_EXPO_VALUE);
+    	double rightSpeed = expo(-Robot.oi.getRightStickY(), Constants.DRIVE_EXPO_VALUE);
+    	
+    	if (d_isReverse) {
+    		leftSpeed = -leftSpeed;
+    		rightSpeed = -rightSpeed;
+    	}
+    	
+    	// If the right stick trigger is depressed, set to HIGH gear
+    	if (d_isLowGear && Robot.oi.getButtonState(RobotMap.rightJoystick, 1)) {
+    		Robot.driveSystem.setHighGear();
+    		d_isLowGear = false;
+    	}
+    	else if (!d_isLowGear && !Robot.oi.getButtonState(RobotMap.rightJoystick, 1)) {
+    		// we were in high gear and button is released
+    		Robot.driveSystem.setLowGear();
+    		d_isLowGear = true;
+    	}
     	
     	leftSpeed *= d_maxSpeed;
     	rightSpeed *= d_maxSpeed;
     	
-    	Robot.driveSystem.tankDrive(leftSpeed, rightSpeed);
+    	if (d_isReverse) {
+    		Robot.driveSystem.tankDrive(rightSpeed, leftSpeed);
+    	}
+    	else {
+    		Robot.driveSystem.tankDrive(leftSpeed, rightSpeed);
+    	}
     }
 
     // Make this return true when this Command no longer needs to run execute()

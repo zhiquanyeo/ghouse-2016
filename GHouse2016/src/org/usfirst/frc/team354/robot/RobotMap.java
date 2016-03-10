@@ -17,5 +17,20 @@ public class RobotMap {
     // public static int rangefinderModule = 1;
 	
 	// Joysticks
-	public static final int driverJoystick = 0;
+	//public static final int driverJoystick = 0;
+	public static final int leftJoystick = 0;
+	public static final int rightJoystick = 1;
+	public static final int gamepad = 2;
+	
+	// Buttons
+	public static final int GAMEPAD_BUTTON_A = 2;
+	public static final int GAMEPAD_BUTTON_B = 3;
+	public static final int GAMEPAD_BUTTON_X = 1;
+	public static final int GAMEPAD_BUTTON_Y = 4;
+	public static final int GAMEPAD_BUTTON_LB = 5;
+	public static final int GAMEPAD_BUTTON_RB = 6;
+	public static final int GAMEPAD_BUTTON_LT = 7;
+	public static final int GAMEPAD_BUTTON_RT = 8;
+	public static final int GAMEPAD_BUTTON_BACK = 9;
+	public static final int GAMEPAD_BUTTON_START = 10;
 }

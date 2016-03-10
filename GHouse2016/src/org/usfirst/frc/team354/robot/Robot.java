@@ -4,16 +4,20 @@ package org.usfirst.frc.team354.robot;
 import org.usfirst.frc.team354.robot.commands.autonomous.base.AutoTurnToVisionTarget;
 import org.usfirst.frc.team354.robot.commands.test.ShooterTest;
 import org.usfirst.frc.team354.robot.commands.test.SystemsTest;
+import org.usfirst.frc.team354.robot.dashboard.DashboardConnection;
 import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
 import org.usfirst.frc.team354.robot.subsystems.IntakeSystem;
 import org.usfirst.frc.team354.robot.subsystems.MainArm;
 import org.usfirst.frc.team354.robot.subsystems.ShooterRoller;
 import org.usfirst.frc.team354.robot.subsystems.UpperArm;
 import org.usfirst.frc.team354.robot.subsystems.Winch;
+import org.usfirst.frc.team354.robot.vision.VisionProcessing;
 import org.usfirst.frc.team354.robot.vision.VisionSystem;
+import org.usfirst.frc.team354.robot.vision.VisionSystem.VisionTarget;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -35,12 +39,19 @@ public class Robot extends IterativeRobot {
 	public static final DriveSystem driveSystem = new DriveSystem();
 	public static final MainArm mainArm = new MainArm();
 	public static final UpperArm upperArm = new UpperArm();
-	public static final ShooterRoller lowerShooter = new ShooterRoller("LowerShooter", Constants.CAN_ID_LOWER_SHOOTER_MASTER, Constants.CAN_ID_LOWER_SHOOTER_SLAVE);
-	public static final ShooterRoller upperShooter = new ShooterRoller("UpperShooter", Constants.CAN_ID_UPPER_SHOOTER_MASTER, Constants.CAN_ID_UPPER_SHOOTER_SLAVE);
+	public static final ShooterRoller lowerShooter = new ShooterRoller("LowerShooter", 
+					Constants.CAN_ID_LOWER_SHOOTER_MASTER, Constants.CAN_ID_LOWER_SHOOTER_SLAVE,
+					0.05, 0.0, 0.5, 0.025); // PIDF
+	public static final ShooterRoller upperShooter = new ShooterRoller("UpperShooter", 
+					Constants.CAN_ID_UPPER_SHOOTER_MASTER, Constants.CAN_ID_UPPER_SHOOTER_SLAVE,
+					0.06, 0.0, 0.204, 0.033); // PIDF
+	
 	public static final IntakeSystem intakeSystem = new IntakeSystem();
 	public static final Winch winch = new Winch();
 	
 	public static final VisionSystem visionSystem = new VisionSystem();
+	
+	public static final MaxBotixRangefinder frontRangefinder = new MaxBotixRangefinder(Constants.AIN_ULTRASONIC, -2.0);
 	
 	public static AHRS ahrs;
 	
@@ -48,6 +59,8 @@ public class Robot extends IterativeRobot {
 
     Command autonomousCommand;
     SendableChooser chooser;
+    
+    private CameraServer server;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -58,6 +71,10 @@ public class Robot extends IterativeRobot {
     	visionSystem.initialize();
     	
     	// Set up CameraServer
+    	server = CameraServer.getInstance();
+        server.setQuality(50);
+        //the camera name (ex "cam0") can be found through the roborio web interface
+        server.startAutomaticCapture("cam0");
     	
     	// Set up AHRS
     	try {
@@ -76,7 +93,39 @@ public class Robot extends IterativeRobot {
 //        chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", chooser);
         
+        DashboardConnection.intitialize();
+        
         System.out.println("[ROBOT] Robot Initialized");
+    }
+    
+    private void updateDashboard() {
+    	VisionTarget target = visionSystem.getBestTarget();
+    	if (target != null) {
+        	SmartDashboard.putNumber("Distance To Target", VisionProcessing.distanceToTargetCorrected(target));
+        	double[] vals = new double[4];
+    		vals[0] = target.getCenterX();
+    		vals[1] = target.getCenterY();
+    		vals[2] = target.getWidth();
+    		vals[3] = target.getHeight();
+    		DashboardConnection.publishNumberArray("targetInfo", vals);
+        }
+        else {
+        	SmartDashboard.putNumber("Distance To Target", -1);
+        	double[] vals = new double[4];
+    		vals[0] = -1;
+    		vals[1] = -1;
+    		vals[2] = -1;
+    		vals[3] = -1;
+    		DashboardConnection.publishNumberArray("targetInfo", vals);
+        }
+        SmartDashboard.putNumber("Main Arm Angle", mainArm.getAngle());
+        SmartDashboard.putNumber("Upper Arm Angle", upperArm.getAngle());
+        SmartDashboard.putBoolean("Main Arm Fully Lowered", mainArm.isFullyLowered());
+        
+        SmartDashboard.putBoolean("Main Arm Safe To Move", mainArm.isSafeToMove());
+        SmartDashboard.putNumber("Ultrasonic Distance", frontRangefinder.getRange());
+        
+        DashboardConnection.publishNumber("mainArmAngle", mainArm.getAngle());
     }
 	
 	/**
@@ -124,6 +173,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        updateDashboard();
     }
 
     public void teleopInit() {
@@ -139,7 +189,9 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        updateDashboard();
     }
+       
     
     /**
      * This function is called periodically during test mode

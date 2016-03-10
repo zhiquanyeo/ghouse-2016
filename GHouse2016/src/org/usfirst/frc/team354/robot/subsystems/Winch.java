@@ -13,13 +13,16 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 public class Winch extends Subsystem {
     
 	private CANTalon d_motor = new CANTalon(Constants.CAN_ID_WINCH);
-	private DigitalInput d_limitSwitch = new DigitalInput(Constants.DIN_WINCH_LIMIT_SWITCH);
+	private DigitalInput d_lowerLimitSwitch = new DigitalInput(Constants.DIN_WINCH_LOWER_LIMIT_SWITCH);
+	private DigitalInput d_barContactSwitch = new DigitalInput(Constants.DIN_WINCH_HOOK_BAR_CONTACT_SWITCH);
+	
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 	
 	public Winch() {
 		LiveWindow.addActuator("Winch", "Winch Motor", d_motor);
-		LiveWindow.addSensor("Winch", "Winch Limit Switch", d_limitSwitch);
+		LiveWindow.addSensor("Winch", "Winch Lower Limit Switch", d_lowerLimitSwitch);
+		LiveWindow.addSensor("Winch", "Winch Hook-to-Bar Contact Switch", d_barContactSwitch);
 	}
 
     public void initDefaultCommand() {
@@ -36,8 +39,12 @@ public class Winch extends Subsystem {
     	d_motor.set(0.0);
     }
     
-    public boolean atLimit() {
-    	return !d_limitSwitch.get();
+    public boolean atLowerLimit() {
+    	return !d_lowerLimitSwitch.get();
+    }
+    
+    public boolean hookContactingBar() {
+    	return !d_barContactSwitch.get();
     }
 }
 

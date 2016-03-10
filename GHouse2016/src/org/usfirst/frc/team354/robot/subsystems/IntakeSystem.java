@@ -12,8 +12,13 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class IntakeSystem extends Subsystem {
 	
-	private static final double FORWARD_FEED_SPEED = 0.5;
-	private static final double REVERSE_FEED_SPEED = -0.5;
+	private static final double LOWER_FORWARD_FEED_SPEED = -0.75;
+	private static final double LOWER_REVERSE_FEED_SPEED = 0.75;
+	
+	private static final double LOWER_RAISE_GATE_SPEED = 1.0;
+	
+	private static final double UPPER_FORWARD_FEED_SPEED = -1.0;
+	private static final double UPPER_REVERSE_FEED_SPEED = 1.0;
 	
     private CANTalon d_lowerMotor = new CANTalon(Constants.CAN_ID_LOWER_INTAKE);
     private CANTalon d_upperMotor = new CANTalon(Constants.CAN_ID_UPPER_INTAKE);
@@ -32,20 +37,24 @@ public class IntakeSystem extends Subsystem {
     
     public void startLowerIntake(boolean reverse) {
     	if (reverse) {
-    		d_lowerMotor.set(REVERSE_FEED_SPEED);
+    		d_lowerMotor.set(LOWER_REVERSE_FEED_SPEED);
     	}
     	else {
-    		d_lowerMotor.set(FORWARD_FEED_SPEED);
+    		d_lowerMotor.set(LOWER_FORWARD_FEED_SPEED);
     	}
     }
     
     public void startUpperIntake(boolean reverse) {
     	if (reverse) {
-    		d_upperMotor.set(REVERSE_FEED_SPEED);
+    		d_upperMotor.set(UPPER_REVERSE_FEED_SPEED);
     	}
     	else {
-    		d_upperMotor.set(FORWARD_FEED_SPEED);
+    		d_upperMotor.set(UPPER_FORWARD_FEED_SPEED);
     	}
+    }
+    
+    public void startLowerIntakeGateMode() {
+    	d_lowerMotor.set(LOWER_RAISE_GATE_SPEED);
     }
     
     public void stopLowerIntake() {
