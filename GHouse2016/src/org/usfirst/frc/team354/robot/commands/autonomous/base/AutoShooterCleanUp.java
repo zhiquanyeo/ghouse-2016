@@ -7,39 +7,32 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class AutoTankDriveForTime extends Command {
-	private long d_startTime;
-	private long d_driveTime;
-	private double d_leftSpeed;
-	private double d_rightSpeed;
-	
-    public AutoTankDriveForTime(double leftSpeed, double rightSpeed, long driveDuration) {
-        d_driveTime = driveDuration;
-        d_leftSpeed = leftSpeed;
-        d_rightSpeed = rightSpeed;
-        
-        requires(Robot.driveSystem);
+public class AutoShooterCleanUp extends Command {
+
+    public AutoShooterCleanUp() {
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
+    	requires(Robot.upperShooter);
+    	requires(Robot.lowerShooter);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	d_startTime = System.currentTimeMillis();
-    	Robot.driveSystem.setLowGear();
+    	Robot.upperShooter.setSpeed(0);
+    	Robot.lowerShooter.setSpeed(0);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.driveSystem.tankDrive(d_leftSpeed, d_rightSpeed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return (System.currentTimeMillis() - d_startTime) > d_driveTime;
+        return true;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.driveSystem.tankDrive(0.0, 0.0);
     }
 
     // Called when another command which requires one or more of the same

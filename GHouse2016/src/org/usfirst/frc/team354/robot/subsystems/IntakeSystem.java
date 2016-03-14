@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class IntakeSystem extends Subsystem {
 	
-	private static final double LOWER_FORWARD_FEED_SPEED = -0.75;
-	private static final double LOWER_REVERSE_FEED_SPEED = 0.75;
+	private static final double LOWER_FORWARD_FEED_SPEED = -0.55;
+	private static final double LOWER_REVERSE_FEED_SPEED = 0.95;
 	
 	private static final double LOWER_RAISE_GATE_SPEED = 1.0;
 	

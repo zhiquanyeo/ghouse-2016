@@ -1,9 +1,12 @@
 
 package org.usfirst.frc.team354.robot;
 
-import org.usfirst.frc.team354.robot.commands.autonomous.base.AutoTurnToVisionTarget;
-import org.usfirst.frc.team354.robot.commands.test.ShooterTest;
-import org.usfirst.frc.team354.robot.commands.test.SystemsTest;
+import org.usfirst.frc.team354.robot.commands.FullyLowerMainArm;
+import org.usfirst.frc.team354.robot.commands.auto.routines.AutoRoutineHulkMode;
+import org.usfirst.frc.team354.robot.commands.auto.routines.AutoRoutineLowBar;
+import org.usfirst.frc.team354.robot.commands.auto.routines.AutoRoutineLowBarWithTurnTake2;
+import org.usfirst.frc.team354.robot.commands.auto.routines.AutoRoutineSpyShoot;
+import org.usfirst.frc.team354.robot.commands.auto.routines.AutoRoutineSpyShootNoMove;
 import org.usfirst.frc.team354.robot.dashboard.DashboardConnection;
 import org.usfirst.frc.team354.robot.subsystems.DriveSystem;
 import org.usfirst.frc.team354.robot.subsystems.IntakeSystem;
@@ -86,16 +89,33 @@ public class Robot extends IterativeRobot {
     	
 		oi = new OI();
         chooser = new SendableChooser();
-        chooser.addDefault("Turn To Vision Target", new AutoTurnToVisionTarget());
-        chooser.addObject("Systems Test", new SystemsTest());
-        chooser.addObject("Shooter Test", new ShooterTest());
-        // chooser.addDefault("Default Auto", new ExampleCommand());
-//        chooser.addObject("My Auto", new MyAutoCommand());
+        //chooser.addDefault("Do Nothing", new NoOp());
+        //chooser.addObject("Low Bar Side Target", new AutoRoutineLowBarSideTarget());
+        chooser.addObject("Low Bar Simple", new AutoRoutineLowBar());
+        chooser.addObject("Low Bar With Turn", new AutoRoutineLowBarWithTurnTake2());
+        chooser.addObject("Hulk Mode", new AutoRoutineHulkMode());
+        chooser.addObject("Spy Zone (Move Forward)", new AutoRoutineSpyShoot());
+        chooser.addObject("Spy Zone (No Movement)", new AutoRoutineSpyShootNoMove());
+        
+        // TEST
+        chooser.addObject("TEST fully lower arm", new FullyLowerMainArm());
+        
         SmartDashboard.putData("Auto mode", chooser);
         
         DashboardConnection.intitialize();
         
         System.out.println("[ROBOT] Robot Initialized");
+    }
+    
+    private boolean okToShoot(VisionTarget target) {
+    	if (target == null) return false;
+    	double distance = VisionProcessing.distanceToTargetCorrected(target);
+    	double ultrasonicDist = frontRangefinder.getRange();
+    	//Make sure we are more or less lined up center
+    	if (Math.abs(160 - target.getCenterX()) < 10) { //10px margin
+    		return true;
+    	}
+    	return false;
     }
     
     private void updateDashboard() {
@@ -125,7 +145,10 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putBoolean("Main Arm Safe To Move", mainArm.isSafeToMove());
         SmartDashboard.putNumber("Ultrasonic Distance", frontRangefinder.getRange());
         
+        SmartDashboard.putBoolean("Ball In Robot", intakeSystem.ballPresent());
+        
         DashboardConnection.publishNumber("mainArmAngle", mainArm.getAngle());
+        
     }
 	
 	/**

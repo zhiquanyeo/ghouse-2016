@@ -1,7 +1,9 @@
 package org.usfirst.frc.team354.robot;
 
 import org.usfirst.frc.team354.robot.commands.ActivateGateMode;
+import org.usfirst.frc.team354.robot.commands.OperatorFireBall;
 import org.usfirst.frc.team354.robot.commands.OperatorIntakeControl;
+import org.usfirst.frc.team354.robot.commands.OperatorSpinUp;
 import org.usfirst.frc.team354.robot.commands.OperatorTankDrive;
 import org.usfirst.frc.team354.robot.commands.RaiseMainArmToAngle;
 import org.usfirst.frc.team354.robot.subsystems.MainArm;
@@ -63,6 +65,13 @@ public class OI {
 		
 		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_BACK).whenPressed(new RaiseMainArmToAngle(MainArm.ARM_STARTING_POSITION));
 		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_START).whenPressed(new RaiseMainArmToAngle(MainArm.ARM_BALL_INTAKE));
+		
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_LT).whileHeld(new OperatorSpinUp());
+		getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_RT).whileHeld(new OperatorFireBall());
+		
+		// TEST ONLY
+		//getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_LB).whenPressed(new RaiseUpperArmToAngle(20));
+		//getButton(RobotMap.gamepad, RobotMap.GAMEPAD_BUTTON_RB).whenPressed(new RaiseUpperArmToAngle(90));
 	}
 	
 	public double getLeftStickY() {

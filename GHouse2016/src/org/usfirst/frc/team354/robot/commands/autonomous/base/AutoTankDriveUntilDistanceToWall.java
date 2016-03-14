@@ -7,43 +7,38 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class AutoTankDriveForTime extends Command {
-	private long d_startTime;
-	private long d_driveTime;
-	private double d_leftSpeed;
-	private double d_rightSpeed;
+public class AutoTankDriveUntilDistanceToWall extends Command {
 	
-    public AutoTankDriveForTime(double leftSpeed, double rightSpeed, long driveDuration) {
-        d_driveTime = driveDuration;
-        d_leftSpeed = leftSpeed;
-        d_rightSpeed = rightSpeed;
-        
-        requires(Robot.driveSystem);
+	private double d_targetDistanceAway = 0;
+    public AutoTankDriveUntilDistanceToWall(double distAway) {
+    	d_targetDistanceAway = distAway;
+    	requires(Robot.driveSystem);
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	d_startTime = System.currentTimeMillis();
-    	Robot.driveSystem.setLowGear();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.driveSystem.tankDrive(d_leftSpeed, d_rightSpeed);
+    	Robot.driveSystem.tankDrive(0.5, 0.5);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return (System.currentTimeMillis() - d_startTime) > d_driveTime;
+        return Robot.frontRangefinder.getRange() < d_targetDistanceAway;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.driveSystem.tankDrive(0.0, 0.0);
+    	Robot.driveSystem.tankDrive(0, 0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	Robot.driveSystem.tankDrive(0, 0);
     }
 }

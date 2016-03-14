@@ -1,7 +1,7 @@
 package org.usfirst.frc.team354.robot;
 
 public class Constants {
-	public static final double DRIVE_EXPO_VALUE = 2.0;
+	public static final double DRIVE_EXPO_VALUE = 1.0;
 	
 	// === Analog Input Channels ===
 	// Main Arm
@@ -56,4 +56,13 @@ public class Constants {
 	// Winch
 	public static final int CAN_ID_WINCH = 23;
 	
+	// Directions
+	public static final int DIR_TURN_LEFT = 1;
+	public static final int DIR_TURN_RIGHT = 2;
+	
+	// Shooter Values
+	public static final double[] UPPER_SHOOTER_SPEED = {0.0,   4456,  4504,   4407,   4553};
+	public static final double[] LOWER_SHOOTER_SPEED = {0.0,   5812,  4916,   4819,   4625};
+	public static final double[] SHOOTER_DISTANCES  =  {84.0,  96.0,  108.0,  120.0,  132.0}; // in inches
+												 		//      7ft    8ft     9ft     10ft
 }

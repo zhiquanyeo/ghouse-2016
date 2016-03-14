@@ -1,6 +1,7 @@
 package org.usfirst.frc.team354.robot.subsystems;
 
 import org.usfirst.frc.team354.robot.Constants;
+import org.usfirst.frc.team354.robot.commands.OperatorWinchControl;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -28,11 +29,21 @@ public class Winch extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    	//setDefaultCommand(new OperatorWinchControl());
+    }
+    
+    public void driveWinch(double speed) {
+    	d_motor.set(speed);
     }
     
     public void startWinch() {
     	// TODO Don't start if the limit switch is set
-    	d_motor.set(0.75);
+    	if (!atLowerLimit()) {
+    		d_motor.set(0.75);
+    	}
+    	else {
+    		d_motor.set(0);
+    	}
     }
     
     public void stopWinch() {

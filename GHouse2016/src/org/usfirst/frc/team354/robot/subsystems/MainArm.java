@@ -21,14 +21,14 @@ public class MainArm extends PIDSubsystem {
 	private DigitalInput d_lowerLimitSwitch = new DigitalInput(Constants.DIN_MAIN_ARM_LOWER_LIMIT_SWITCH);
 	
 	public static final double ARM_FULLY_LOWERED = 0.0;
-	public static final double ARM_BALL_INTAKE = 8.9; // CORRECT VALUE
+	public static final double ARM_BALL_INTAKE = 7.9; // CORRECT VALUE was 8.9
 	public static final double ARM_CLIMB_INITIAL = 95.0;
 	public static final double ARM_CLIMB_CURL = 66.0;
 	public static final double ARM_STARTING_POSITION = 66.0; // CORRECT VALUE
 	
 	// Positive Speed = UP
-	public static final double ARM_RAISE_SPEED = 0.2;
-	public static final double ARM_LOWER_SPEED = -0.1;
+	public static final double ARM_RAISE_SPEED = 0.8; //was 0.5
+	public static final double ARM_LOWER_SPEED = -0.8; //was -0.5
 	
 	private double d_setAngle = 0.0;
 	
